@@ -22,7 +22,6 @@ tee << EOF >> /etc/sysctl.conf
 kernel.shmmax = 11719476736
 kernel.shmall = 4294967296
 kernel.shmmni = 4096	
-kernel.sem = 50100 64128000 50100 1280
 fs.file-max = 7672460
 net.ipv4.ip_local_port_range = 9000 65000
 net.core.rmem_default = 1048576
