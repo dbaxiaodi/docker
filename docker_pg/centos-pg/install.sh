@@ -19,7 +19,7 @@ mkdir -p /var/data/postgres && mkdir /var/data/xlog_archive && chown -R postgres
 
 # modify kernel
 tee << EOF >> /etc/sysctl.conf
-kernel.shmmax = 68719476736
+kernel.shmmax = 11719476736
 kernel.shmall = 4294967296
 kernel.shmmni = 4096	
 kernel.sem = 50100 64128000 50100 1280
@@ -45,7 +45,7 @@ su - postgres -c '/usr/local/postgres/bin/initdb -D /var/data/postgres/ -E UTF8 
 # postgres configuration
 cat << EOF >> /var/data/postgres/postgresql.conf
 listen_addresses = '*'
-max_connections = 1000
+max_connections = 2000
 wal_level = hot_standby
 synchronous_commit = on
 archive_mode = on
@@ -59,12 +59,18 @@ wal_receiver_status_interval = 2s
 hot_standby_feedback = on
 #log_destination = 'stderr'
 log_destination = 'csvlog'
-log_statement = 'mod'
+log_statement = 'ddl'
 logging_collector = on
 log_directory = 'pg_log'
 log_filename = 'postgresql-%a.log'
 restart_after_crash = off
-shared_buffers = 1024MB
+fsync = off
+shared_buffers = 2048MB
+log_min_duration_statement = 500
+work_mem = 40MB
+shared_preload_libraries = 'pg_stat_statements'
+#synchronous_commit = on
+
 EOF
 
 cat << EOF >> /var/data/postgres/pg_hba.conf
